@@ -1,3 +1,5 @@
 *.pyc
 *-checkpoint.py
-.ipynb_checkpoints/
+.ipynb_checkpoints/*
+functions/.ipynb_checkpoints/*
+*__pycache__/*
