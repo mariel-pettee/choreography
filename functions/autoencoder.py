@@ -1,5 +1,6 @@
 from keras.models import Model
 from keras.layers import Input, Reshape, Dense, Flatten, Dropout, LeakyReLU, Add, Subtract, Lambda
+import numpy as np
 
 class Autoencoder:
   def __init__(self,
