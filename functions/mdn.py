@@ -127,6 +127,10 @@ class LSTM_MDN:
     if n_dims != self.n_dims: raise Exception(' ! got', n_dims, 'dims, expected', self.n_dims)
     if look_back != self.look_back: raise Exception(' ! got', look_back, 'for look_back, expected', self.look_back)
     
+    # center each frame along the x and y axes to simplify training
+    X[:,:,0] = X[:,:,0] - np.mean(X[:,:,0], axis=0) + 0.5*np.ones(self.n_verts)
+    X[:,:,1] = X[:,:,1] - np.mean(X[:,:,1], axis=0) + 0.5*np.ones(self.n_verts)
+    
     # lstm expects data in shape [samples_in_batch, timestamps, values]
     train_X = []
     train_Y = []
