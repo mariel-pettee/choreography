@@ -13,8 +13,8 @@ def setup():
     # use tensorflow backend
     os.environ['KERAS_BACKEND'] = 'tensorflow'
     # set random seeds
-    tf.set_random_seed(1)
-    np.random.seed(1)
+    # tf.set_random_seed(1)
+    # np.random.seed(1)
     # identify available GPU's
     gpus = K.tensorflow_backend._get_available_gpus()
     # allow dynamic GPU memory allocation
