@@ -5,3 +5,4 @@ functions/.ipynb_checkpoints/*
 *__pycache__/*
 *.h5
 *.log
+*.json
