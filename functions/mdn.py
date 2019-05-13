@@ -8,7 +8,7 @@ import tensorflow_probability as tfp
 import tensorflow as tf
 from keras.models import load_model
 import numpy as np
-from keras.callbacks import TerminateOnNaN
+from keras.callbacks import TerminateOnNaN, ModelCheckpoint
 
 # check tfp version, as tfp causes cryptic error if out of date
 assert float(tfp.__version__.split('.')[1]) >= 5
