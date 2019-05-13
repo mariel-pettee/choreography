@@ -5,9 +5,8 @@ import numpy as np
 import os
 import glob
 from itertools import combinations
-
-def test(x):
-    return x+1
+from keras.models import load_model
+import argparse
 
 def setup():
     # use tensorflow backend
@@ -22,6 +21,7 @@ def setup():
     config.gpu_options.allow_growth = True
     session = tf.Session(config=config)
     print("GPUs found: {}".format(len(gpus)))
+    return()
     
 def load_data(files):
     labels = ['ARIEL', 'C7', 'CLAV', 'LANK', 'LBHD', 'LBSH', 'LBWT', 'LELB', 'LFHD', 'LFRM', 'LFSH', 'LFWT', 'LHEL', 'LIEL', 'LIHAND', 'LIWR', 'LKNE', 'LKNI', 'LMT1', 'LMT5', 'LOHAND', 'LOWR', 'LSHN', 'LTHI', 'LTOE', 'LUPA', 'LabelingHips', 'MBWT', 'MFWT', 'RANK', 'RBHD', 'RBSH', 'RBWT', 'RELB', 'RFHD', 'RFRM', 'RFSH', 'RFWT', 'RHEL', 'RIEL', 'RIHAND', 'RIWR', 'RKNE', 'RKNI', 'RMT1', 'RMT5', 'ROHAND', 'ROWR', 'RSHN', 'RTHI', 'RTOE', 'RUPA', 'STRN', 'SolvingHips', 'T10']    
@@ -47,7 +47,7 @@ def load_data(files):
     ]
     infile_glob = sorted(glob.glob(files))
     data = Data(infile_glob, labels, bad_labels, edge_groups)
-    print(infile_glob)
+    print("Files loaded: {}".format(infile_glob))
     return data
 
 class Data:
