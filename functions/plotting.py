@@ -52,6 +52,7 @@ def animate(df, edges=[], axes=None, frames=50, speed=45, figsize=(7,5), colors=
   ax.set_xlim(*axes['x'])
   ax.set_ylim(*axes['y'])
   ax.set_zlim(*axes['z'])
+  plt.close(fig)
   if edges:
     params = {'edges': edges}
     callback = update_lines
@@ -70,8 +71,9 @@ def animate(df, edges=[], axes=None, frames=50, speed=45, figsize=(7,5), colors=
     frames,
     interval=speed,
     fargs=(geoms, df, params),
-    blit=False  
+    blit=False,
   ).to_html5_video()
+
 
 def plot_labelled_points(x=None, frame_idx=0, figsize=(14,10), font_size=8, axes=None, text=True):
   '''
