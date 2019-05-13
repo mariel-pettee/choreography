@@ -15,8 +15,8 @@ print("Training dataset shape: {}".format(X_train.shape))
 print("Preparing to train...")
 
 ### Declare your training parameters:
-n_epochs = 2
-cells = [32,32,32,32]
+n_epochs = 1000
+cells = [128,128,128,128]
 batch_size = 128
 look_back = 10
 n_mixes = 3
