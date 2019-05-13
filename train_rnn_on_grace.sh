@@ -1,11 +1,11 @@
 #!/bin/bash
 #SBATCH --partition day
-#SBATCH --time 6:00:00
-#SBATCH --job-name 256
-#SBATCH --output logs/rnn_256-%J.log
+#SBATCH --time 12:00:00
+#SBATCH --job-name 64
+#SBATCH --output logs/rnn_64-%J.log
 
 source ~/.bashrc
 conda activate choreo
-python rnn.py weights/model_rnn_256.json weights/weights_rnn_256.h5 --cells 256 256 256 256
+python rnn.py weights/model_rnn_64.json weights/weights_rnn_64.h5 --cells 64 64 64 64
 
 

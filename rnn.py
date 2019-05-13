@@ -33,7 +33,7 @@ with open(args.model_path, "w") as json_file:
 print("Model saved as {}!".format(args.model_path))
 
 ### Declare your training parameters:
-n_epochs = 100
+n_epochs = 10000
 batch_size = 128
 
 ### Train the model:
