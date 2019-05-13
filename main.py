@@ -350,5 +350,5 @@ lstm_mdn = LSTM_MDN(n_verts=n_verts, n_dims=n_dims, n_mixes=n_mixes, look_back=l
 history = lstm_mdn.model.fit(train_X, train_Y, epochs=10000, batch_size=128, shuffle=False, callbacks=[TerminateOnNaN()])
 
 from keras.models import load_model
-lstm_mdn.model.save_weights('trained_models/mdn_nopca_10000epochs_weights.h5')
+lstm_mdn.model.save_weights('weights/mdn_nopca_10000epochs_gpu_weights.h5')
 print("Weights saved!")
