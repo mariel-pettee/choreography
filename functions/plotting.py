@@ -163,6 +163,7 @@ def animate_ghost(df_real, df_pred, edges=[], axes=None, frames=50, speed=45, fi
   ax.set_xlim(*axes['x'])
   ax.set_ylim(*axes['y'])
   ax.set_zlim(*axes['z'])
+  plt.close(fig)
   if edges:
     params = {'edges': edges}
     callback = update_lines_ghost
