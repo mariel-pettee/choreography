@@ -1,4 +1,4 @@
-# choreography
+# Beyond Imitation
 'I didn’t want to imitate anybody. Any movement I knew, I didn’t want to use.' – Pina Bausch
 
 ### Create the Conda env: 
