@@ -105,7 +105,7 @@ class LSTM_MDN:
     h = self.LSTM(self.cells[0], return_sequences=True)(i) # return sequences, stateful
     h = self.LSTM(self.cells[1], return_sequences=True)(h)
     h = self.LSTM(self.cells[2])(h)
-    h = Dense(self.cells[3])(h)
+    # h = Dense(self.cells[3])(h)
     if self.use_mdn:
       o = MDN(self.n_mixes, self.n_verts*self.n_dims)(h)
     else:

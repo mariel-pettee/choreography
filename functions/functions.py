@@ -3,14 +3,14 @@ from keras import backend as K
 import tensorflow as tf
 import numpy as np
 import os
+os.environ['KERAS_BACKEND'] = 'tensorflow'
 import glob
 from itertools import combinations
 from keras.models import load_model
 import argparse
 
-def setup():
+def setup_gpus():
     # use tensorflow backend
-    os.environ['KERAS_BACKEND'] = 'tensorflow'
     # set random seeds
     # tf.set_random_seed(1)
     # np.random.seed(1)
