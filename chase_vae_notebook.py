@@ -43,13 +43,13 @@ loss_history = []
 
 
 # encoder = model_from_json(open('models/vae_lstm_enc_model.json').read(), {'RotationLayer': RotationLayer})
-encoder.load_weights('weights/checkpoint_weights_vae_lstm_lr_0.001_encoder.h5')
+encoder.load_weights('weights/checkpoint_weights_vae_lstm_continued_lr_0.001_encoder.h5')
 
 # decoder = model_from_json(open('models/vae_lstm_dec_model.json').read(), {'RotationLayer': RotationLayer})
-decoder.load_weights('weights/checkpoint_weights_vae_lstm_lr_0.001_decoder.h5')
+decoder.load_weights('weights/checkpoint_weights_vae_lstm_continued_lr_0.001_decoder.h5')
 
 # auto = model_from_json(open('models/vae_lstm_auto_model.json').read(), {'RotationLayer': RotationLayer})
-autoencoder.load_weights('weights/checkpoint_weights_vae_lstm_lr_0.001_autoencoder.h5')
+autoencoder.load_weights('weights/checkpoint_weights_vae_lstm_continued_lr_0.001_autoencoder.h5')
 
 autoencoder.summary()
 
@@ -78,7 +78,7 @@ class CustomCheckpoint(keras.callbacks.Callback):
             self.decoder.save_weights(self.filepath+"_decoder.h5", overwrite=True)
             self.autoencoder.save_weights(self.filepath+"_autoencoder.h5", overwrite=True)
 
-checkpoint_callback = CustomCheckpoint(filepath="weights/checkpoint_weights_vae_lstm_continued_lr_"+str(lr),encoder=encoder, decoder=decoder, autoencoder=autoencoder)
+checkpoint_callback = CustomCheckpoint(filepath="weights/checkpoint_weights_vae_lstm_continued2_lr_"+str(lr),encoder=encoder, decoder=decoder, autoencoder=autoencoder)
 
 try:
     autoencoder.fit_generator(gen_batches_safe(ds_all_centered, ds_counts, batch_size, seq_len), steps_per_epoch=nstep, epochs=epochs, verbose=1, callbacks=[checkpoint_callback])

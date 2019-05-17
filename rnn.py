@@ -11,7 +11,7 @@ parser.add_argument("--n_epochs", type=int, help="Number of epochs to train", de
 parser.add_argument("--batch_size", type=int, help="Batch size", default=128)
 
 args = parser.parse_args()
-setup()
+# setup_gpus()
 data = load_data('data/mariel_*')
 X = data.selected.X  # only 15 joints! If you want all the joints, do data.all.X
 print("Preparing to train...")
@@ -39,6 +39,9 @@ with open(model_path, "w") as json_file:
     json_file.write(model_json)
 print("Model saved as {}!".format(model_path))
 
+# ### Optional: Load some pre-trained weights
+# lstm_mdn.model.load_weights('weights/weights-quarter-chor-rnn2.h5')
+
 ### Declare your training parameters:
 n_epochs = args.n_epochs
 batch_size = args.batch_size
@@ -48,7 +51,3 @@ checkpoint_filepath = "weights/weights-"+args.name+".h5"
 checkpoint = ModelCheckpoint(checkpoint_filepath, monitor='acc', verbose=1, save_best_only=True, mode='max')
 
 history = lstm_mdn.model.fit(train_X, train_Y, epochs=n_epochs, batch_size=batch_size, shuffle=False, verbose=2, callbacks=[checkpoint, TerminateOnNaN()])
-
-# ### Save the weights:
-# lstm_mdn.model.save_weights(args.weight_path)
-# print("Weights saved as {}!".format(args.weight_path))

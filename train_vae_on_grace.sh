@@ -1,9 +1,9 @@
 #!/bin/bash
 #SBATCH --partition day
-#SBATCH --time 12:00:00
+#SBATCH --time 1-
 #SBATCH --cpus-per-task 26
 #SBATCH --job-name vae3
-#SBATCH --output vae-1e-3-ctd-%J.log
+#SBATCH --output vae-1e-3-ctd2-%J.log
 
 source ~/.bashrc
 conda activate choreo

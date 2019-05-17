@@ -1,13 +1,13 @@
 #!/bin/bash
-#SBATCH --partition bigmem
-#SBATCH --time 12:00:00
-#SBATCH --job-name quarterchor-rnn2
-#SBATCH --output logs/quarterchor-rnn2-%J.log
-#SBATCH --mem 100GB
+#SBATCH --partition day
+#SBATCH --time 1-
+#SBATCH --job-name 32pca
+#SBATCH --output logs/32pca-%J.log
+#SBATCH --mem 40GB
 
 source ~/.bashrc
 conda activate choreo
-python rnn.py quarter-chor-rnn2 --cells 256 256 256 --n_mixes 6 --look_back 256 --batch_size 128 --n_epochs 1000
+# python rnn.py 256chor-rnn-noweightsloaded --cells 256 256 256 --n_mixes 6 --look_back 128 --batch_size 128 --n_epochs 1000
 
 
-# python rnn_with_pca.py rnn_pca_32 
+python rnn_with_pca.py rnn_pca_32 --cells 32 32 32 --n_mixes 6 --look_back 128 --batch_size 128 --n_epochs 1000
