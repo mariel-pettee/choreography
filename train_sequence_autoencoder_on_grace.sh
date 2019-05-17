@@ -7,5 +7,5 @@
 
 source ~/.bashrc
 conda activate choreo
-python chase_vae_notebook.py --lr 1e-3
+python sequence_autoencoder.py --lr 1e-3
 

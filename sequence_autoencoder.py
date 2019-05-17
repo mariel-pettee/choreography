@@ -44,20 +44,14 @@ loss_history = []
 
 
 # encoder = model_from_json(open('models/vae_lstm_enc_model.json').read(), {'RotationLayer': RotationLayer})
-encoder.load_weights('weights/checkpoint_weights_vae_lstm_continued_lr_0.001_encoder.h5')
-
 # decoder = model_from_json(open('models/vae_lstm_dec_model.json').read(), {'RotationLayer': RotationLayer})
-decoder.load_weights('weights/checkpoint_weights_vae_lstm_continued_lr_0.001_decoder.h5')
-
 # auto = model_from_json(open('models/vae_lstm_auto_model.json').read(), {'RotationLayer': RotationLayer})
+
+encoder.load_weights('weights/checkpoint_weights_vae_lstm_continued_lr_0.001_encoder.h5')
+decoder.load_weights('weights/checkpoint_weights_vae_lstm_continued_lr_0.001_decoder.h5')
 autoencoder.load_weights('weights/checkpoint_weights_vae_lstm_continued_lr_0.001_autoencoder.h5')
 
 autoencoder.summary()
-
-
-# Train:
-
-
 
 nstep = sum([c-seq_len for c in ds_counts])//batch_size
 
@@ -89,19 +83,3 @@ except KeyboardInterrupt:
 
 print("Updating loss history")
 loss_history.extend(autoencoder.history.history['loss'])
-
-
-# # save_weights = True
-# # load_weights = False
-
-# # if save_weights:
-# #     print("Saving weights...")
-# #     encoder.save_weights('test_LSTM_enc_weights.h5')
-# #     decoder.save_weights('test_LSTM_dec_weights.h5')
-# #     autoencoder.save_weights('test_LSTM_autoencoder_weights.h5')
-# # if load_weights:
-# #     print("Loading weights...")
-# #     encoder.load_weights('seq_vae_enc_weights.h5')
-# #     decoder.load_weights('seq_vae_dec_weights.h5')
-# #     autoencoder.load_weights('seq_vae_autoencoder_weights.h5')
-
