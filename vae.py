@@ -39,6 +39,7 @@ autoencoder.summary()
 K.set_value(autoencoder.optimizer.lr, lr)
 K.set_value(autoencoder.hp_kl_weight, kl_weight)
 
+
 loss_history = []
 
 

@@ -24,7 +24,7 @@ def setup_gpus():
     gpus = K.tensorflow_backend._get_available_gpus()
     print("GPUs found: {}".format(len(gpus)))
 
-def load_data(pattern="gatsby_data/mariel_*.npy"):
+def load_data(pattern="vae_data/mariel_*.npy"):
    # load up the six datasets, performing some minimal preprocessing beforehand
     datasets = {}
     ds_all = []
