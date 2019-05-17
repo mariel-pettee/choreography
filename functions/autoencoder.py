@@ -1,4 +1,5 @@
 from keras.models import Model
+from keras import optimizers
 from keras.layers import Input, Reshape, Dense, Flatten, Dropout, LeakyReLU, Add, Subtract, Lambda
 import numpy as np
 
@@ -36,7 +37,7 @@ class Autoencoder:
     if add_random_offsets:
         o = Lambda(lambda x: x - random_offsets)(o)
     self.model = Model(inputs=[i], outputs=[o])
-    self.model.compile(loss='mse', optimizer='adam')
+    self.model.compile(loss='mse', optimizer=optimizers.Adam(lr=1e-4))
     
   def build_encoder(self):
     i = Input((self.n_verts, self.n_dims))

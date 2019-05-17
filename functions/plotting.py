@@ -144,6 +144,10 @@ def update_lines_ghost(time, lines_real, df_real, lines_pred, df_pred, params, g
     line[0].set_3d_properties([a[2], b[2]])
   return lines_pred
 
+def update_points_ghost(time, points_real, df_real, points_pred, df_pred, params, ghost_shift):
+  points_real._offsets3d = juggle_axes(df_real[:,time,0], df_real[:,time,1], df_real[:,time,2], 'z')
+  points_pred._offsets3d = juggle_axes(df_pred[:,time,0]+ghost_shift, df_pred[:,time,1], df_pred[:,time,2], 'z')
+
 def animate_ghost(df_real, df_pred, edges=[], axes=None, frames=50, speed=45, figsize=(7,5), colors=None, ghost_shift=0.3):
   '''
   General function that can plot numpy arrays in either of two shapes.
