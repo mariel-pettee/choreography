@@ -1,6 +1,6 @@
 #!/bin/bash
-#SBATCH --partition day
-#SBATCH --time 3:00:00
+#SBATCH --partition scavenge
+#SBATCH --time 1:00:00
 #SBATCH --job-name rnn32
 #SBATCH --output logs/chor_rnn32_rnn_lr1e-4-%J.log
 #SBATCH --mem 10GB

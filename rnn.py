@@ -10,14 +10,16 @@ parser.add_argument("--n_mixes", type=int, help="Number of Gaussians to use in t
 parser.add_argument("--n_epochs", type=int, help="Number of epochs to train", default=10)
 parser.add_argument("--batch_size", type=int, help="Batch size", default=128)
 parser.add_argument("--lr", type=float, help="Learning rate", default=1e-3)
-parser.add_argument("--use_pca", type=bool, help="Use PCA compression of each frame", default=False)
-parser.add_argument("--load_weights", type=bool, help="Load in a pre-trained set of weights to continue training", default=False)
+parser.add_argument("--use_pca", action='store_true', help="Use PCA compression of each frame")
+parser.add_argument("--load_weights", action='store_true', help="Load in a pre-trained set of weights to continue training")
 parser.add_argument("--weights", type=str, help="Weights file to load", default="")
 
 args = parser.parse_args()
 setup_gpus()
 data = load_data('rnn_data/mariel_*')
-X = data.selected.X  # only 15 joints! If you want all the joints, do data.all.X
+X = data.selected.X
+
+print(args.use_pca)
 print("Preparing to train...")
 
 if args.use_pca:
@@ -26,7 +28,6 @@ if args.use_pca:
 	X[:,:,0] = X[:,:,0] - np.mean(X[:,:,0], axis=0) + 0.5*np.ones(15)
 	X[:,:,1] = X[:,:,1] - np.mean(X[:,:,1], axis=0) + 0.5*np.ones(15)
 	X = X.reshape(X.shape[0],X.shape[1]*X.shape[2])
-
 	# PCA time:
 	from sklearn.decomposition import PCA
 	pca = PCA(.95)
@@ -35,7 +36,6 @@ if args.use_pca:
 	print('Explained variation per principal component: {}'.format(pca.explained_variance_ratio_))
 	print('Reduced data has the shape: {}'.format(pca_reduced_data.shape))
 	n_time, n_dims, n_verts  = pca_reduced_data.shape[0], 1, pca_reduced_data.shape[1]
-
 	print('PCA means: {}'.format(pca.mean_))
 	np.save('pca/'+args.name+'-means.npy', pca.mean_)
 	print('PCA components: {}'.format(pca.components_))
@@ -69,8 +69,8 @@ if args.use_pca:
 else:
 	train_X, train_Y = lstm_mdn.prepare_inputs(X, look_back=look_back)
 
-print("train_X shape: {}".format(train_X.shape))
-print("train_Y shape: {}".format(train_Y.shape))
+print("total X shape: {}".format(train_X.shape))
+print("total Y shape: {}".format(train_Y.shape))
 
 ### Save the model as a .json file:
 from keras.models import model_from_json
@@ -90,6 +90,5 @@ batch_size = args.batch_size
 
 ### Train the model:
 checkpoint_filepath = "weights/weights-"+args.name+".h5"
-checkpoint = ModelCheckpoint(checkpoint_filepath, monitor='acc', verbose=1, save_best_only=True, mode='max')
-
-history = lstm_mdn.model.fit(train_X, train_Y, epochs=n_epochs, batch_size=batch_size, shuffle=False, verbose=2, callbacks=[checkpoint, TerminateOnNaN()])
+checkpoint = ModelCheckpoint(checkpoint_filepath, monitor='val_acc', verbose=1, save_best_only=True, mode='max')
+history = lstm_mdn.model.fit(train_X, train_Y, validation_split=0.2, epochs=n_epochs, batch_size=batch_size, shuffle=False, verbose=2, callbacks=[checkpoint, TerminateOnNaN()])
