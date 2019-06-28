@@ -2,7 +2,7 @@
 'I didn’t want to imitate anybody. Any movement I knew, I didn’t want to use.' – Pina Bausch
 
 ### Getting started: 
-I like to work within Conda environments to manage package dependencies. To download Conda (Miniconda is sufficient, no need to go for the full Anaconda) for your particular system, check out: https://docs.conda.io/en/latest/miniconda.html
+I like to work within Conda environments to manage package dependencies. To download Conda (Miniconda is sufficient, no need to go for the full Anaconda) for your particular system, and for Python 3, check out: https://docs.conda.io/en/latest/miniconda.html
 
 Once that's installed, clone the repository and set up the Conda environment:
 ```sh
