@@ -8,9 +8,9 @@ Once that's installed, clone the repository and set up the Conda environment:
 ```sh
 git clone https://github.com/mariel-pettee/choreography.git
 cd choreography
-conda create -n choreo
+conda create -n choreo python=3 keras tensorflow
 ```
-Type `y` when prompted, then:
+Type `y` when prompted, then install the remaining requirements via `pip`:
 ```
 conda activate choreo
 pip install -r requirements.txt
