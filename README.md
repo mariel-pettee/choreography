@@ -13,7 +13,7 @@ conda create -n choreo
 Type `y` when prompted, then:
 ```
 conda activate choreo
-pip install -r pip_req.txt
+pip install -r requirements.txt
 python -m ipykernel install --user --name choreo --display-name "choreo" # installs the Conda kernel for use in Jupyter notebooks
 ```
 You can then actively develop within your environment and add packages as you see fit. If anything breaks beyond measure, you can always exit the environment with `conda deactivate` and can even delete the environment with `conda env remove -n choreo`. Then you can remake the environment by following the steps above again. 
