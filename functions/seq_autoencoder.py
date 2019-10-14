@@ -123,7 +123,7 @@ point_labels = ['ARIEL', 'C7',
 # or more named points -- the line will be drawn at the average position
 # of the points in the group
 skeleton_lines = [
-    # ( (start group), (end group) ),
+#     ( (start group), (end group) ),
     (('LHEL',), ('LTOE',)), # toe to heel
     (('RHEL',), ('RTOE',)),
     (('LKNE','LKNI'), ('LHEL',)), # heel to knee
@@ -148,12 +148,22 @@ skeleton_lines = [
     (('RFHD',), ('ARIEL',)),
 ]
 
+# Normal, connected skeleton:
 skeleton_idxs = []
 for g1,g2 in skeleton_lines:
     entry = []
     entry.append([point_labels.index(l) for l in g1])
     entry.append([point_labels.index(l) for l in g2])
     skeleton_idxs.append(entry)
+
+# # Cloud of every point connected:
+# skeleton_idxs = []
+# for i in range(53):
+#     for j in range(53):
+#         entry = []
+#         entry.append([i])
+#         entry.append([j])
+#         skeleton_idxs.append(entry)
 
 # calculate the coordinates for the lines
 def get_line_segments(seq, zcolor=None, cmap=None):
@@ -200,6 +210,7 @@ def animate_stick(seq, ghost=None, ghost_shift=0, figsize=None, zcolor=None, poi
         zcolor = np.zeros(seq.shape[1])
     fig = plt.figure(figsize=figsize)
     ax = p3.Axes3D(fig)
+    
     # The following lines eliminate background lines/axes:
     ax.axis('off')
     ax.xaxis.set_visible(False)
@@ -228,10 +239,9 @@ def animate_stick(seq, ghost=None, ghost_shift=0, figsize=None, zcolor=None, poi
         ax.set_xlim(*ax_lims)
         ax.set_ylim(*ax_lims)
         ax.set_zlim(0,ax_lims[1]-ax_lims[0])
-        #ax.set_zlim(*ax_lims)
     plt.close(fig)
     xline, colors = get_line_segments(seq, zcolor, cm)
-    lines = put_lines(ax, xline[0], colors, lw=lw)
+    lines = put_lines(ax, xline[0], colors, lw=lw, alpha=1.0)
     
     if ghost is not None:
         xline_g = get_line_segments(ghost)
@@ -244,7 +254,6 @@ def animate_stick(seq, ghost=None, ghost_shift=0, figsize=None, zcolor=None, poi
         X = seq[:,zidx,0]
         Y = seq[:,zidx,1]
         Z = seq[:,zidx,2]
-        #Z = seq[:,2,2]
         quiv = ax.quiver(X[0],Y[0],Z[0],dX[0],dY[0],0, color=pointer_color)
         ax.quiv = quiv
     
