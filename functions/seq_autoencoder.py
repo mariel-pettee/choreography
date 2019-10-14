@@ -200,7 +200,14 @@ def animate_stick(seq, ghost=None, ghost_shift=0, figsize=None, zcolor=None, poi
         zcolor = np.zeros(seq.shape[1])
     fig = plt.figure(figsize=figsize)
     ax = p3.Axes3D(fig)
+    # The following lines eliminate background lines/axes:
     ax.axis('off')
+    ax.xaxis.set_visible(False)
+    ax.yaxis.set_visible(False)
+    ax.set_frame_on(False)
+    
+    # set figure background opacity (alpha) to 0:
+    fig.patch.set_alpha(0.)
     
     if ghost_shift and ghost is not None:
         seq = seq.copy()
@@ -263,7 +270,7 @@ def animate_stick(seq, ghost=None, ghost_shift=0, figsize=None, zcolor=None, poi
         len(seq),
         interval=speed,
         blit=False,
-   ).to_html5_video()
+   )
     
 # draw a "comic strip" style rendering of the given sequence of poses
 def draw_comic(frames, angles=None, figsize=None, window_size=0.45, dot_size=20, lw=2.5, zcolor=None,cmap='cool_r'):
