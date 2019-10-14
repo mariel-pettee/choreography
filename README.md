@@ -8,9 +8,9 @@ Once that's installed, clone the repository and set up the Conda environment:
 ```sh
 git clone https://github.com/mariel-pettee/choreography.git
 cd choreography
-conda create -n choreo
+conda create -n choreo python=3 keras tensorflow
 ```
-Type `y` when prompted, then:
+Type `y` when prompted, then install the remaining requirements via `pip`:
 ```
 conda activate choreo
 pip install -r requirements.txt
@@ -19,6 +19,8 @@ python -m ipykernel install --user --name choreo --display-name "choreo" # insta
 You can then actively develop within your environment and add packages as you see fit. If anything breaks beyond measure, you can always exit the environment with `conda deactivate` and can even delete the environment with `conda env remove -n choreo`. Then you can remake the environment by following the steps above again. 
 
 Note that when opening a Jupyter notebook, to use the same packages as you've installed here, you need to select "choreo" from the list of kernels within your notebook.
+
+To display animations live in the Jupyter notebook environment, we recommend installing `ffmpeg` (https://ffmpeg.org/download.html) into your Conda environment as well. If you'd prefer not to do this, you can also change the `to_html5_video()` commands to `.to_jshtml()`.
 
 ### Play with the RNN model
 This model, inspired by chor-rnn (https://arxiv.org/abs/1605.06921), uses 3 LSTM layers to predict new poses given a prompt of a sequence of poses. The length of the prompt is called `look_back`. We use a Mixture Density Network (https://publications.aston.ac.uk/id/eprint/373/1/NCRG_94_004.pdf) to create multiple Gaussian distributions of potential poses given a prompt sequence. The number of Gaussian distributions is determined by `n_mixes`. 

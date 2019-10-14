@@ -200,6 +200,7 @@ def animate_stick(seq, ghost=None, ghost_shift=0, figsize=None, zcolor=None, poi
         zcolor = np.zeros(seq.shape[1])
     fig = plt.figure(figsize=figsize)
     ax = p3.Axes3D(fig)
+    ax.axis('off')
     
     if ghost_shift and ghost is not None:
         seq = seq.copy()
@@ -211,8 +212,10 @@ def animate_stick(seq, ghost=None, ghost_shift=0, figsize=None, zcolor=None, poi
     
     pts = ax.scatter(seq[0,:,0],seq[0,:,1],seq[0,:,2], c=zcolor, s=dot_size, cmap=cm, alpha=dot_alpha)
     
+    ghost_color = 'blue'
+
     if ghost is not None:
-        pts_g = ax.scatter(ghost[0,:,0],ghost[0,:,1],ghost[0,:,2], c='red', s=dot_size, alpha=dot_alpha)
+        pts_g = ax.scatter(ghost[0,:,0],ghost[0,:,1],ghost[0,:,2], c=ghost_color, s=dot_size, alpha=dot_alpha)
     
     if ax_lims:
         ax.set_xlim(*ax_lims)
@@ -225,7 +228,7 @@ def animate_stick(seq, ghost=None, ghost_shift=0, figsize=None, zcolor=None, poi
     
     if ghost is not None:
         xline_g = get_line_segments(ghost)
-        lines_g = put_lines(ax, xline_g[0], 'red', lw=lw, alpha=0.5)
+        lines_g = put_lines(ax, xline_g[0], ghost_color, lw=lw, alpha=1.0)
     
     if pointer is not None:
         vR = 0.15
