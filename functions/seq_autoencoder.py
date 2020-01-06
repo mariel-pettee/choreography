@@ -122,22 +122,97 @@ point_labels = ['ARIEL', 'C7',
 # be drawn. Each segment is defined as a line between a group of one
 # or more named points -- the line will be drawn at the average position
 # of the points in the group
+# PS: See http://www.cs.uu.nl/docs/vakken/mcanim/mocap-manual/site/img/markers.png for detailed marker definitions
+# skeleton_lines = [
+# #     ( (start group), (end group) ),
+#     (('LHEL',), ('LTOE',)), # toe to heel
+#     (('RHEL',), ('RTOE',)),
+#     (('LKNE','LKNI'), ('LHEL',)), # heel to knee
+#     (('RKNE','RKNI'), ('RHEL',)),
+#     (('LKNE','LKNI'), ('LFWT','RFWT','LBWT','RBWT')), # knee to "navel"
+#     (('RKNE','RKNI'), ('LFWT','RFWT','LBWT','RBWT')),
+#     (('LFWT','RFWT','LBWT','RBWT'), ('STRN','T10',)), # "navel" to chest
+#     (('STRN','T10',), ('CLAV','C7',)), # chest to neck
+#     (('CLAV','C7',), ('LFSH','LBSH',),), # neck to shoulders
+#     (('CLAV','C7',), ('RFSH','RBSH',),),
+#     (('LFSH','LBSH',), ('LELB', 'LIEL',),), # shoulders to elbows
+#     (('RFSH','RBSH',), ('RELB', 'RIEL',),),
+#     (('LELB', 'LIEL',), ('LOWR','LIWR',),), # elbows to wrist
+#     (('RELB', 'RIEL',), ('ROWR','RIWR',),),
+#     (('LFHD',), ('LBHD',)), # draw lines around circumference of the head
+#     (('LBHD',), ('RBHD',)),
+#     (('RBHD',), ('RFHD',)),
+#     (('RFHD',), ('LFHD',)),
+#     (('LFHD',), ('ARIEL',)), # connect circumference points to top of head
+#     (('LBHD',), ('ARIEL',)),
+#     (('RBHD',), ('ARIEL',)),
+#     (('RFHD',), ('ARIEL',)),
+# ]
+
+### Use these instead for Anna & Jeannie film animations:
 skeleton_lines = [
 #     ( (start group), (end group) ),
     (('LHEL',), ('LTOE',)), # toe to heel
     (('RHEL',), ('RTOE',)),
+    (('LMT1',), ('LMT5',)), # horizontal line across foot
+    (('RMT1',), ('RMT5',)),   
+    (('LHEL',), ('LMT1',)), # heel to sides of feet
+    (('LHEL',), ('LMT5',)),
+    (('RHEL',), ('RMT1',)),
+    (('RHEL',), ('RMT5',)),
+    (('LTOE',), ('LMT1',)), # toe to sides of feet
+    (('LTOE',), ('LMT5',)),
+    (('RTOE',), ('RMT1',)),
+    (('RTOE',), ('RMT5',)),
     (('LKNE','LKNI'), ('LHEL',)), # heel to knee
     (('RKNE','RKNI'), ('RHEL',)),
-    (('LKNE','LKNI'), ('LFWT','RFWT','LBWT','RBWT')), # knee to "navel"
-    (('RKNE','RKNI'), ('LFWT','RFWT','LBWT','RBWT')),
+    (('LKNE',), ('LHEL',)), # heel to knee
+    (('RKNE',), ('RHEL',)),
+#     (('LKNE','LKNI'), ('LFWT','RFWT','LBWT','RBWT')), # knee to "navel"
+#     (('RKNE','RKNI'), ('LFWT','RFWT','LBWT','RBWT')),
+    (('LFWT',), ('RBWT',)), # connect pelvis
+    (('RFWT',), ('LBWT',)), 
+    (('LFWT',), ('RFWT',)), 
+    (('LBWT',), ('RBWT',)),
+    (('LFWT',), ('LBWT',)), 
+    (('RFWT',), ('RBWT',)), 
+    (('LFWT',), ('LTHI',)), # pelvis to thighs
+    (('RFWT',), ('RTHI',)), 
+    (('LBWT',), ('LTHI',)), 
+    (('RBWT',), ('RTHI',)), 
+    (('LKNE','LKNI'), ('LTHI',)), # thighs to knees
+    (('RKNE','RKNI'), ('RTHI',)), 
+    (('LKNE',), ('LTHI',)), 
+    (('RKNE',), ('RTHI',)), 
     (('LFWT','RFWT','LBWT','RBWT'), ('STRN','T10',)), # "navel" to chest
     (('STRN','T10',), ('CLAV','C7',)), # chest to neck
+#     (('CLAV',), ('C7',)), # clavicle through to the back of chest
+    (('CLAV',), ('LFSH',)), # clavicle to shoulders
+    (('CLAV',), ('RFSH',)), 
+    (('STRN',), ('LFSH',)), # sternum & T10 (back sternum) to shoulders
+    (('STRN',), ('RFSH',)), 
+    (('T10',), ('LFSH',)), 
+    (('T10',), ('RFSH',)), 
+    (('C7',), ('LBSH',)), # back clavicle to back shoulders
+    (('C7',), ('RBSH',)), 
+    (('LFSH',), ('LBSH',)), # front shoulders to back shoulders
+    (('RFSH',), ('RBSH',)), 
+    (('LFSH',), ('RBSH',)),
+    (('RFSH',), ('LBSH',)),
     (('CLAV','C7',), ('LFSH','LBSH',),), # neck to shoulders
     (('CLAV','C7',), ('RFSH','RBSH',),),
     (('LFSH','LBSH',), ('LELB', 'LIEL',),), # shoulders to elbows
     (('RFSH','RBSH',), ('RELB', 'RIEL',),),
+    (('LFSH',), ('LUPA',),), # shoulders to upper arms
+    (('RFSH',), ('RUPA',),), 
+    (('LBSH',), ('LUPA',),), 
+    (('RBSH',), ('RUPA',),), 
+    (('LELB', 'LIEL',), ('LUPA',),), # upper arms to elbows
+    (('RELB', 'RIEL',), ('RUPA',),),
     (('LELB', 'LIEL',), ('LOWR','LIWR',),), # elbows to wrist
     (('RELB', 'RIEL',), ('ROWR','RIWR',),),
+    (('LIEL',), ('LIWR',),), 
+    (('RIEL',), ('RIWR',),),
     (('LFHD',), ('LBHD',)), # draw lines around circumference of the head
     (('LBHD',), ('RBHD',)),
     (('RBHD',), ('RFHD',)),
@@ -147,6 +222,7 @@ skeleton_lines = [
     (('RBHD',), ('ARIEL',)),
     (('RFHD',), ('ARIEL',)),
 ]
+
 
 # Normal, connected skeleton:
 skeleton_idxs = []
@@ -241,7 +317,7 @@ def animate_stick(seq, ghost=None, ghost_shift=0, figsize=None, zcolor=None, poi
         ax.set_zlim(0,ax_lims[1]-ax_lims[0])
     plt.close(fig)
     xline, colors = get_line_segments(seq, zcolor, cm)
-    lines = put_lines(ax, xline[0], colors, lw=lw, alpha=1.0)
+    lines = put_lines(ax, xline[0], colors, lw=lw, alpha=0.9)
     
     if ghost is not None:
         xline_g = get_line_segments(ghost)
