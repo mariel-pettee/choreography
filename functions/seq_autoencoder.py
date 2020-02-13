@@ -209,10 +209,20 @@ skeleton_lines = [
     (('RBSH',), ('RUPA',),), 
     (('LELB', 'LIEL',), ('LUPA',),), # upper arms to elbows
     (('RELB', 'RIEL',), ('RUPA',),),
-    (('LELB', 'LIEL',), ('LOWR','LIWR',),), # elbows to wrist
-    (('RELB', 'RIEL',), ('ROWR','RIWR',),),
-    (('LIEL',), ('LIWR',),), 
-    (('RIEL',), ('RIWR',),),
+#     (('LELB', 'LIEL',), ('LOWR','LIWR',),), # elbows to wrist
+#     (('RELB', 'RIEL',), ('ROWR','RIWR',),),
+    (('LELB', 'LIEL',), ('LIWR',),), 
+    (('RELB', 'RIEL',), ('RIWR',),),
+    (('LELB', 'LIEL',), ('LOWR',),), 
+    (('RELB', 'RIEL',), ('ROWR',),),
+    (('LIWR',), ('LIHAND',),), # wrist to hand
+    (('RIWR',), ('RIHAND',),),
+    (('LOWR',), ('LOHAND',),), 
+    (('ROWR',), ('ROHAND',),),
+    (('LIWR',), ('LOWR',),), # across the wrist 
+    (('RIWR',), ('ROWR',),), 
+    (('LIHAND',), ('LOHAND',),), # across the palm 
+    (('RIHAND',), ('ROHAND',),), 
     (('LFHD',), ('LBHD',)), # draw lines around circumference of the head
     (('LBHD',), ('RBHD',)),
     (('RBHD',), ('RFHD',)),
@@ -232,21 +242,27 @@ for g1,g2 in skeleton_lines:
     entry.append([point_labels.index(l) for l in g2])
     skeleton_idxs.append(entry)
 
-# # Cloud of every point connected:
-# skeleton_idxs = []
-# for i in range(53):
-#     for j in range(53):
-#         entry = []
-#         entry.append([i])
-#         entry.append([j])
-#         skeleton_idxs.append(entry)
+# Cloud of every point connected:
+cloud_idxs = []
+for i in range(53):
+    for j in range(53):
+        entry = []
+        entry.append([i])
+        entry.append([j])
+        cloud_idxs.append(entry)
+
+# print(len(skeleton_idxs))
+# print(len(cloud_idxs))
+
+all_idxs = skeleton_idxs+cloud_idxs
+# print(len(all_idxs))
 
 # calculate the coordinates for the lines
 def get_line_segments(seq, zcolor=None, cmap=None):
-    xline = np.zeros((seq.shape[0],len(skeleton_idxs),3,2))
+    xline = np.zeros((seq.shape[0],len(all_idxs),3,2))
     if cmap:
-        colors = np.zeros((len(skeleton_idxs), 4))
-    for i,(g1,g2) in enumerate(skeleton_idxs):
+        colors = np.zeros((len(all_idxs), 4))
+    for i,(g1,g2) in enumerate(all_idxs):
         xline[:,i,:,0] = np.mean(seq[:,g1], axis=1)
         xline[:,i,:,1] = np.mean(seq[:,g2], axis=1)
         if cmap is not None:
@@ -259,6 +275,7 @@ def get_line_segments(seq, zcolor=None, cmap=None):
 # put line segments on the given axis, with given colors
 def put_lines(ax, segments, color=None, lw=2.5, alpha=None):
     lines = []
+    ### Main skeleton
     for i in range(len(skeleton_idxs)):
         if isinstance(color, (list,tuple,np.ndarray)):
             c = color[i]
@@ -269,6 +286,20 @@ def put_lines(ax, segments, color=None, lw=2.5, alpha=None):
                 np.linspace(segments[i,2,0],segments[i,2,1],2),
                 color=c,
                 alpha=alpha,
+                lw=lw)[0]
+        lines.append(l)
+    
+    ### Cloud of all-connected joints
+    for i in range(len(skeleton_idxs),len(all_idxs)):
+        if isinstance(color, (list,tuple,np.ndarray)):
+            c = color[i]
+        else:
+            c = color
+        l = ax.plot(np.linspace(segments[i,0,0],segments[i,0,1],2),
+                np.linspace(segments[i,1,0],segments[i,1,1],2),
+                np.linspace(segments[i,2,0],segments[i,2,1],2),
+                color=c,
+                alpha=0.03,
                 lw=lw)[0]
         lines.append(l)
     return lines
