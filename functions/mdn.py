@@ -79,7 +79,7 @@ class MDN(Layer):
 
       result = tf.map_fn(lambda  m: loss_i(m), mix, dtype=tf.float32, name='mix_map_fn')
       result = tf.reduce_sum(result, axis=0, keepdims=False)
-      result = -tf.log(result)
+      result = -tf.math.log(result)
       result = tf.reduce_mean(result)
       return result
 
@@ -96,7 +96,7 @@ class LSTM_MDN:
     self.use_mdn = use_mdn
     self.use_pca = use_pca
     self.lr = lr
-    self.LSTM = CuDNNLSTM if len(K.tensorflow_backend._get_available_gpus()) > 0 else LSTM
+    self.LSTM = CuDNNLSTM if len(tf.config.list_physical_devices('GPU')) > 0 else LSTM
     self.model = self.build_model()
     if use_mdn:
       self.model.compile(loss=MDN(n_mixes, n_verts*n_dims).get_loss_func(), optimizer=optimizers.Adam(lr=lr), metrics=['accuracy'])

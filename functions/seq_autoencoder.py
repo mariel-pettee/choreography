@@ -2,6 +2,7 @@ import os
 from glob import glob
 import tensorflow as tf
 import keras
+from tqdm import tqdm
 from keras.models import model_from_json
 import keras.backend as K
 import keras.layers as layers
@@ -277,7 +278,7 @@ def get_line_segments(seq, zcolor=None, cmap=None, cloud=False):
 def put_lines(ax, segments, color=None, lw=2.5, alpha=None, cloud=False):
     lines = []
     ### Main skeleton
-    for i in range(len(skeleton_idxs)):
+    for i in tqdm(range(len(skeleton_idxs)), desc="Skeleton lines"):
         if isinstance(color, (list,tuple,np.ndarray)):
             c = color[i]
         else:
@@ -292,7 +293,7 @@ def put_lines(ax, segments, color=None, lw=2.5, alpha=None, cloud=False):
     
     if cloud:
         ### Cloud of all-connected joints
-        for i in range(len(skeleton_idxs),len(all_idxs)):
+        for i in tqdm(range(len(skeleton_idxs),len(all_idxs)), desc="Cloud lines"):
             if isinstance(color, (list,tuple,np.ndarray)):
                 c = color[i]
             else:

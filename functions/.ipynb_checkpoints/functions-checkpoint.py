@@ -3,25 +3,26 @@ from keras import backend as K
 import tensorflow as tf
 import numpy as np
 import os
+os.environ['KERAS_BACKEND'] = 'tensorflow'
 import glob
 from itertools import combinations
+from keras.models import load_model
+import argparse
 
-def test(x):
-    return x+1
-
-def setup():
+def setup_gpus():
     # use tensorflow backend
-    os.environ['KERAS_BACKEND'] = 'tensorflow'
     # set random seeds
     # tf.set_random_seed(1)
     # np.random.seed(1)
     # identify available GPU's
-    gpus = K.tensorflow_backend._get_available_gpus()
+#     gpus = K.tensorflow_backend._get_available_gpus()
+    gpus = tf.config.experimental.list_physical_devices('GPU')
     # allow dynamic GPU memory allocation
-    config = tf.ConfigProto()
+    config = tf.compat.v1.ConfigProto()
     config.gpu_options.allow_growth = True
-    session = tf.Session(config=config)
+    session = tf.compat.v1.Session(config=config)
     print("GPUs found: {}".format(len(gpus)))
+    return()
     
 def load_data(files):
     labels = ['ARIEL', 'C7', 'CLAV', 'LANK', 'LBHD', 'LBSH', 'LBWT', 'LELB', 'LFHD', 'LFRM', 'LFSH', 'LFWT', 'LHEL', 'LIEL', 'LIHAND', 'LIWR', 'LKNE', 'LKNI', 'LMT1', 'LMT5', 'LOHAND', 'LOWR', 'LSHN', 'LTHI', 'LTOE', 'LUPA', 'LabelingHips', 'MBWT', 'MFWT', 'RANK', 'RBHD', 'RBSH', 'RBWT', 'RELB', 'RFHD', 'RFRM', 'RFSH', 'RFWT', 'RHEL', 'RIEL', 'RIHAND', 'RIWR', 'RKNE', 'RKNI', 'RMT1', 'RMT5', 'ROHAND', 'ROWR', 'RSHN', 'RTHI', 'RTOE', 'RUPA', 'STRN', 'SolvingHips', 'T10']    
@@ -47,7 +48,7 @@ def load_data(files):
     ]
     infile_glob = sorted(glob.glob(files))
     data = Data(infile_glob, labels, bad_labels, edge_groups)
-    print(infile_glob)
+    print("Files loaded: {}".format(infile_glob))
     return data
 
 class Data:
