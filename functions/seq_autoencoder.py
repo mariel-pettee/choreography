@@ -18,12 +18,20 @@ plt.rcParams['animation.ffmpeg_path'] = '/project/hep/demers/mnp3/miniconda3/env
 # print(matplotlib.animation.writers.list()) # check that ffmpeg is loaded. if it's not there, use .to_jshtml() instead of .to_html5_video().
 
 def setup_gpus():
-    os.environ['CUDA_VISIBLE_DEVICES'] = '2'
-    config = tf.ConfigProto()
-    config.gpu_options.allow_growth = True
-    session = tf.Session(config=config)
+    # use tensorflow backend
+    # set random seeds
+    # tf.set_random_seed(1)
+    # np.random.seed(1)
+    # identify available GPU's
     gpus = K.tensorflow_backend._get_available_gpus()
+#     gpus = tf.config.experimental.list_physical_devices('GPU')
+    # allow dynamic GPU memory allocation
+    config = tf.compat.v1.ConfigProto()
+    config.gpu_options.allow_growth = True
+    session = tf.compat.v1.Session(config=config)
     print("GPUs found: {}".format(len(gpus)))
+    return()
+    
 
 def load_data(pattern="vae_data/mariel_*.npy"):
    # load up the six datasets, performing some minimal preprocessing beforehand
