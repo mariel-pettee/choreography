@@ -86,7 +86,7 @@ six==1.14.0
 tb-nightly==2.2.0a20200227
 tensorboard==1.13.1
 tensorboard-plugin-wit==1.6.0.post2
-tensorflow==1.13.1
+tensorflow==1.15.4
 tensorflow-estimator==1.13.0
 tensorflow-probability==0.7.0
 termcolor==1.1.0
