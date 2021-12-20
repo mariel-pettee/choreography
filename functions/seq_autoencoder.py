@@ -14,7 +14,7 @@ from mpl_toolkits.mplot3d.art3d import juggle_axes
 from IPython.display import HTML
 import matplotlib
 import matplotlib.pyplot as plt
-plt.rcParams['animation.ffmpeg_path'] = '/project/hep/demers/mnp3/miniconda3/envs/choreo/bin/ffmpeg' # for using html5 video in Jupyter notebook
+plt.rcParams['animation.ffmpeg_path'] = '/clusterfs/ml4hep/mpettee/choreography/ffmpeg' # for using html5 video in Jupyter notebook
 # print(matplotlib.animation.writers.list()) # check that ffmpeg is loaded. if it's not there, use .to_jshtml() instead of .to_html5_video().
 
 def setup_gpus():
@@ -23,13 +23,17 @@ def setup_gpus():
     # tf.set_random_seed(1)
     # np.random.seed(1)
     # identify available GPU's
-    gpus = K.tensorflow_backend._get_available_gpus() # works with TF 1 (?)
+#     gpus = K.tensorflow_backend._get_available_gpus() # works with TF 1 (?)
 #     gpus = tf.config.experimental.list_physical_devices('GPU') # works with TF 2
+
+    os.environ["CUDA_VISIBLE_DEVICES"] = "3" # pick a number < 4 on ML4HEP; < 3 on Voltan 
+    gpu_options = tf.GPUOptions(allow_growth=True, per_process_gpu_memory_fraction=0.5)
+    sess = tf.Session(config=tf.ConfigProto(gpu_options=gpu_options))
     # allow dynamic GPU memory allocation
     config = tf.compat.v1.ConfigProto()
     config.gpu_options.allow_growth = True
     session = tf.compat.v1.Session(config=config)
-    print("GPUs found: {}".format(len(gpus)))
+#     print("GPUs found: {}".format(len(gpus)))
     return()
     
 
