@@ -264,12 +264,7 @@ for i in range(53):
         entry.append([j])
         cloud_idxs.append(entry)
 
-# print(len(skeleton_idxs))
-# print(len(cloud_idxs))
-
 all_idxs = skeleton_idxs+cloud_idxs
-
-# print(len(all_idxs))
 
 # calculate the coordinates for the lines
 def get_line_segments(seq, zcolor=None, cmap=None, cloud=False):
