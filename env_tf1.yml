@@ -152,4 +152,3 @@ dependencies:
     - widgetsnbextension==3.5.1
     - wrapt==1.11.2
     - zipp==0.6.0
-prefix: /clusterfs/ml4hep/mpettee/miniconda3/envs/choreo

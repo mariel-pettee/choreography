@@ -14,7 +14,7 @@ from mpl_toolkits.mplot3d.art3d import juggle_axes
 from IPython.display import HTML
 import matplotlib
 import matplotlib.pyplot as plt
-plt.rcParams['animation.ffmpeg_path'] = '/Users/mnp3/Documents/choreography/ffmpeg' # for using html5 video in Jupyter notebook
+plt.rcParams['animation.ffmpeg_path'] = './ffmpeg' # for using html5 video in Jupyter notebook
 # print(matplotlib.animation.writers.list()) # check that ffmpeg is loaded. if it's not there, use .to_jshtml() instead of .to_html5_video().
 
 def setup_gpus():
