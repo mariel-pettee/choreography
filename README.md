@@ -38,8 +38,4 @@ This model also uses an autoencoder structure, but for fixed-length sequences of
 1. Sample randomly from within a given standard deviation in the latent space (which, when well-trained, should resemble an _n_-dimensional Gaussian distribution) to generate a new fixed-length movement sequence
 2. Look at the location of a given sequence in data in the latent space, then add a small deviation to this location and observe its motion. Small deviations (~0.5 sigma or less) will usually closely resemble the original sequence with subtle differences in timing or expressiveness. Larger deviations (~1 sigma or larger) will often capture a similar choreographic idea to the original phrase, but will become increasingly inventive.
 
-Users can experiment with the interactive Jupyter notebook `sequence_autoencoder.ipynb` or via the command line with commands such as: 
-```
-conda activate choreo
-python sequence_autoencoder.py --lr 1e-4
-```
+Users can experiment with the interactive Jupyter notebook `sequence_autoencoder.ipynb`.
