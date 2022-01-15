@@ -2,25 +2,24 @@
 'I didn’t want to imitate anybody. Any movement I knew, I didn’t want to use.' – Pina Bausch
 
 ### Getting started: 
-I like to work within Conda environments to manage package dependencies. To download Conda (Miniconda is sufficient, no need to go for the full Anaconda) for your particular system, and for Python 3, check out: https://docs.conda.io/en/latest/miniconda.html
+I like to work within Conda environments to manage package dependencies. To download Conda (Miniconda is sufficient) for your particular system, and for Python 3, check out: https://docs.conda.io/en/latest/miniconda.html
 
 Once that's installed, clone the repository and set up the Conda environment:
 ```sh
 git clone https://github.com/mariel-pettee/choreography.git
 cd choreography
-conda create -n choreo python=3 keras tensorflow
+conda env create -n choreo -f env_tf1.yml
 ```
-Type `y` when prompted, then install the remaining requirements via `pip`:
+Then, activate the environment and install a kernel for use in JupyterLab: 
+
 ```
 conda activate choreo
-pip install -r requirements.txt
-python -m ipykernel install --user --name choreo --display-name "choreo" # installs the Conda kernel for use in Jupyter notebooks
+python -m ipykernel install --user --name choreo --display-name "choreo"
 ```
-You can then actively develop within your environment and add packages as you see fit. If anything breaks beyond measure, you can always exit the environment with `conda deactivate` and can even delete the environment with `conda env remove -n choreo`. Then you can remake the environment by following the steps above again. 
 
 Note that when opening a Jupyter notebook, to use the same packages as you've installed here, you need to select "choreo" from the list of kernels within your notebook.
 
-To display animations live in the Jupyter notebook environment, we recommend installing `ffmpeg` (https://ffmpeg.org/download.html) into your Conda environment as well. If you'd prefer not to do this, you can also change the `to_html5_video()` commands to `.to_jshtml()`.
+To display animations live in the Jupyter notebook environment, we recommend installing `ffmpeg` (https://ffmpeg.org/download.html) in your main repository directory. If you'd prefer not to do this, you can also change the `to_html5_video()` commands to `.to_jshtml()`.
 
 ### Play with the RNN model
 This model, inspired by chor-rnn (https://arxiv.org/abs/1605.06921), uses 3 LSTM layers to predict new poses given a prompt of a sequence of poses. The length of the prompt is called `look_back`. We use a Mixture Density Network (https://publications.aston.ac.uk/id/eprint/373/1/NCRG_94_004.pdf) to create multiple Gaussian distributions of potential poses given a prompt sequence. The number of Gaussian distributions is determined by `n_mixes`. 
