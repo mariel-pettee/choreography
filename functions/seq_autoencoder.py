@@ -14,30 +14,20 @@ from mpl_toolkits.mplot3d.art3d import juggle_axes
 from IPython.display import HTML
 import matplotlib
 import matplotlib.pyplot as plt
-plt.rcParams['animation.ffmpeg_path'] = '/clusterfs/ml4hep/mpettee/choreography/ffmpeg' # for using html5 video in Jupyter notebook
+plt.rcParams['animation.ffmpeg_path'] = '/Users/mnp3/Documents/choreography/ffmpeg' # for using html5 video in Jupyter notebook
 # print(matplotlib.animation.writers.list()) # check that ffmpeg is loaded. if it's not there, use .to_jshtml() instead of .to_html5_video().
 
 def setup_gpus():
-    # use tensorflow backend
-    # set random seeds
     # tf.set_random_seed(1)
     # np.random.seed(1)
     # identify available GPU's
-#     gpus = K.tensorflow_backend._get_available_gpus() # works with TF 1 (?)
+    gpus = K.tensorflow_backend._get_available_gpus() # works with TF 1
 #     gpus = tf.config.experimental.list_physical_devices('GPU') # works with TF 2
-
-    os.environ["CUDA_VISIBLE_DEVICES"] = "3" # pick a number < 4 on ML4HEP; < 3 on Voltan 
-    gpu_options = tf.GPUOptions(allow_growth=True, per_process_gpu_memory_fraction=0.5)
-    sess = tf.Session(config=tf.ConfigProto(gpu_options=gpu_options))
-    # allow dynamic GPU memory allocation
-    config = tf.compat.v1.ConfigProto()
-    config.gpu_options.allow_growth = True
-    session = tf.compat.v1.Session(config=config)
-#     print("GPUs found: {}".format(len(gpus)))
+    print("GPUs found: {}".format(len(gpus)))
     return()
     
 
-def load_data(pattern="vae_data/mariel_*.npy"):
+def load_data(pattern="data/vae_data/mariel_*.npy"):
    # load up the six datasets, performing some minimal preprocessing beforehand
     datasets = {}
     ds_all = []
@@ -57,8 +47,6 @@ def load_data(pattern="vae_data/mariel_*.npy"):
         print("\t Min:", np.min(ds,axis=(0,1)))
         print("\t Max:", np.max(ds, axis=(0,1)))
 
-        #ds = filter_points(ds)
-
         datasets[ds_name] = ds
         ds_all.append(ds)
 
@@ -68,9 +56,7 @@ def load_data(pattern="vae_data/mariel_*.npy"):
 
     ds_all = np.concatenate(ds_all)
     print("Full data shape:", ds_all.shape)
-    # print("Offsets:", ds_offsets)
 
-    # print(ds_all.min(axis=(0,1)))
     low,hi = np.quantile(ds_all, [0.01,0.99], axis=(0,1))
     xy_min = min(low[:2])
     xy_max = max(hi[:2])
@@ -93,13 +79,13 @@ def load_data(pattern="vae_data/mariel_*.npy"):
         datasets_centered[ds] = datasets[ds].copy()
         datasets_centered[ds][:,:,:2] -= datasets[ds][:,:,:2].mean(axis=1,keepdims=True)
 
-    # print(ds_all.min(axis=(0,1)))
     low,hi = np.quantile(ds_all, [0.01,0.99], axis=(0,1))
     return ds_all, ds_all_centered, datasets, datasets_centered, ds_counts
 
 
 # these are the ordered label names of the 53 vertices
 # (after the Labeling/SolvingHips points have been excised)
+# PS: See http://www.cs.uu.nl/docs/vakken/mcanim/mocap-manual/site/img/markers.png for detailed marker definitions
 point_labels = ['ARIEL', 'C7',
           'CLAV', 'LANK',
           'LBHD', 'LBSH',
@@ -135,107 +121,22 @@ point_labels = ['ARIEL', 'C7',
 # be drawn. Each segment is defined as a line between a group of one
 # or more named points -- the line will be drawn at the average position
 # of the points in the group
-# PS: See http://www.cs.uu.nl/docs/vakken/mcanim/mocap-manual/site/img/markers.png for detailed marker definitions
-# skeleton_lines = [
-# #     ( (start group), (end group) ),
-#     (('LHEL',), ('LTOE',)), # toe to heel
-#     (('RHEL',), ('RTOE',)),
-#     (('LKNE','LKNI'), ('LHEL',)), # heel to knee
-#     (('RKNE','RKNI'), ('RHEL',)),
-#     (('LKNE','LKNI'), ('LFWT','RFWT','LBWT','RBWT')), # knee to "navel"
-#     (('RKNE','RKNI'), ('LFWT','RFWT','LBWT','RBWT')),
-#     (('LFWT','RFWT','LBWT','RBWT'), ('STRN','T10',)), # "navel" to chest
-#     (('STRN','T10',), ('CLAV','C7',)), # chest to neck
-#     (('CLAV','C7',), ('LFSH','LBSH',),), # neck to shoulders
-#     (('CLAV','C7',), ('RFSH','RBSH',),),
-#     (('LFSH','LBSH',), ('LELB', 'LIEL',),), # shoulders to elbows
-#     (('RFSH','RBSH',), ('RELB', 'RIEL',),),
-#     (('LELB', 'LIEL',), ('LOWR','LIWR',),), # elbows to wrist
-#     (('RELB', 'RIEL',), ('ROWR','RIWR',),),
-#     (('LFHD',), ('LBHD',)), # draw lines around circumference of the head
-#     (('LBHD',), ('RBHD',)),
-#     (('RBHD',), ('RFHD',)),
-#     (('RFHD',), ('LFHD',)),
-#     (('LFHD',), ('ARIEL',)), # connect circumference points to top of head
-#     (('LBHD',), ('ARIEL',)),
-#     (('RBHD',), ('ARIEL',)),
-#     (('RFHD',), ('ARIEL',)),
-# ]
-
-### Use these instead for Anna & Jeannie film animations:
 skeleton_lines = [
 #     ( (start group), (end group) ),
     (('LHEL',), ('LTOE',)), # toe to heel
     (('RHEL',), ('RTOE',)),
-    (('LMT1',), ('LMT5',)), # horizontal line across foot
-    (('RMT1',), ('RMT5',)),   
-    (('LHEL',), ('LMT1',)), # heel to sides of feet
-    (('LHEL',), ('LMT5',)),
-    (('RHEL',), ('RMT1',)),
-    (('RHEL',), ('RMT5',)),
-    (('LTOE',), ('LMT1',)), # toe to sides of feet
-    (('LTOE',), ('LMT5',)),
-    (('RTOE',), ('RMT1',)),
-    (('RTOE',), ('RMT5',)),
     (('LKNE','LKNI'), ('LHEL',)), # heel to knee
     (('RKNE','RKNI'), ('RHEL',)),
-    (('LKNE',), ('LHEL',)), # heel to knee
-    (('RKNE',), ('RHEL',)),
-#     (('LKNE','LKNI'), ('LFWT','RFWT','LBWT','RBWT')), # knee to "navel"
-#     (('RKNE','RKNI'), ('LFWT','RFWT','LBWT','RBWT')),
-    (('LFWT',), ('RBWT',)), # connect pelvis
-    (('RFWT',), ('LBWT',)), 
-    (('LFWT',), ('RFWT',)), 
-    (('LBWT',), ('RBWT',)),
-    (('LFWT',), ('LBWT',)), 
-    (('RFWT',), ('RBWT',)), 
-    (('LFWT',), ('LTHI',)), # pelvis to thighs
-    (('RFWT',), ('RTHI',)), 
-    (('LBWT',), ('LTHI',)), 
-    (('RBWT',), ('RTHI',)), 
-    (('LKNE','LKNI'), ('LTHI',)), # thighs to knees
-    (('RKNE','RKNI'), ('RTHI',)), 
-    (('LKNE',), ('LTHI',)), 
-    (('RKNE',), ('RTHI',)), 
+    (('LKNE','LKNI'), ('LFWT','RFWT','LBWT','RBWT')), # knee to "navel"
+    (('RKNE','RKNI'), ('LFWT','RFWT','LBWT','RBWT')),
     (('LFWT','RFWT','LBWT','RBWT'), ('STRN','T10',)), # "navel" to chest
     (('STRN','T10',), ('CLAV','C7',)), # chest to neck
-#     (('CLAV',), ('C7',)), # clavicle through to the back of chest
-    (('CLAV',), ('LFSH',)), # clavicle to shoulders
-    (('CLAV',), ('RFSH',)), 
-    (('STRN',), ('LFSH',)), # sternum & T10 (back sternum) to shoulders
-    (('STRN',), ('RFSH',)), 
-    (('T10',), ('LFSH',)), 
-    (('T10',), ('RFSH',)), 
-    (('C7',), ('LBSH',)), # back clavicle to back shoulders
-    (('C7',), ('RBSH',)), 
-    (('LFSH',), ('LBSH',)), # front shoulders to back shoulders
-    (('RFSH',), ('RBSH',)), 
-    (('LFSH',), ('RBSH',)),
-    (('RFSH',), ('LBSH',)),
     (('CLAV','C7',), ('LFSH','LBSH',),), # neck to shoulders
     (('CLAV','C7',), ('RFSH','RBSH',),),
     (('LFSH','LBSH',), ('LELB', 'LIEL',),), # shoulders to elbows
     (('RFSH','RBSH',), ('RELB', 'RIEL',),),
-    (('LFSH',), ('LUPA',),), # shoulders to upper arms
-    (('RFSH',), ('RUPA',),), 
-    (('LBSH',), ('LUPA',),), 
-    (('RBSH',), ('RUPA',),), 
-    (('LELB', 'LIEL',), ('LUPA',),), # upper arms to elbows
-    (('RELB', 'RIEL',), ('RUPA',),),
-#     (('LELB', 'LIEL',), ('LOWR','LIWR',),), # elbows to wrist
-#     (('RELB', 'RIEL',), ('ROWR','RIWR',),),
-    (('LELB', 'LIEL',), ('LIWR',),), 
-    (('RELB', 'RIEL',), ('RIWR',),),
-    (('LELB', 'LIEL',), ('LOWR',),), 
-    (('RELB', 'RIEL',), ('ROWR',),),
-    (('LIWR',), ('LIHAND',),), # wrist to hand
-    (('RIWR',), ('RIHAND',),),
-    (('LOWR',), ('LOHAND',),), 
-    (('ROWR',), ('ROHAND',),),
-    (('LIWR',), ('LOWR',),), # across the wrist 
-    (('RIWR',), ('ROWR',),), 
-    (('LIHAND',), ('LOHAND',),), # across the palm 
-    (('RIHAND',), ('ROHAND',),), 
+    (('LELB', 'LIEL',), ('LOWR','LIWR',),), # elbows to wrist
+    (('RELB', 'RIEL',), ('ROWR','RIWR',),),
     (('LFHD',), ('LBHD',)), # draw lines around circumference of the head
     (('LBHD',), ('RBHD',)),
     (('RBHD',), ('RFHD',)),
@@ -246,7 +147,6 @@ skeleton_lines = [
     (('RFHD',), ('ARIEL',)),
 ]
 
-
 # Normal, connected skeleton:
 skeleton_idxs = []
 for g1,g2 in skeleton_lines:
@@ -255,23 +155,12 @@ for g1,g2 in skeleton_lines:
     entry.append([point_labels.index(l) for l in g2])
     skeleton_idxs.append(entry)
 
-# Cloud of every point connected:
-cloud_idxs = []
-for i in range(53):
-    for j in range(53):
-        entry = []
-        entry.append([i])
-        entry.append([j])
-        cloud_idxs.append(entry)
-
-all_idxs = skeleton_idxs+cloud_idxs
-
 # calculate the coordinates for the lines
-def get_line_segments(seq, zcolor=None, cmap=None, cloud=False):
-    xline = np.zeros((seq.shape[0],len(all_idxs),3,2))
+def get_line_segments(seq, zcolor=None, cmap=None):
+    xline = np.zeros((seq.shape[0],len(skeleton_idxs),3,2))
     if cmap:
-        colors = np.zeros((len(all_idxs), 4))
-    for i,(g1,g2) in enumerate(all_idxs):
+        colors = np.zeros((len(skeleton_idxs), 4))
+    for i,(g1,g2) in enumerate(skeleton_idxs):
         xline[:,i,:,0] = np.mean(seq[:,g1], axis=1)
         xline[:,i,:,1] = np.mean(seq[:,g2], axis=1)
         if cmap is not None:
@@ -282,7 +171,7 @@ def get_line_segments(seq, zcolor=None, cmap=None, cloud=False):
         return xline
     
 # put line segments on the given axis, with given colors
-def put_lines(ax, segments, color=None, lw=2.5, alpha=None, cloud=False, cloud_alpha=None):
+def put_lines(ax, segments, color=None, lw=2.5, alpha=None):
     lines = []
     ### Main skeleton
     for i in range(len(skeleton_idxs)):
@@ -297,21 +186,6 @@ def put_lines(ax, segments, color=None, lw=2.5, alpha=None, cloud=False, cloud_a
                 alpha=alpha,
                 lw=lw)[0]
         lines.append(l)
-    
-    if cloud:
-        ### Cloud of all-connected joints
-        for i in range(len(skeleton_idxs),len(all_idxs)):
-            if isinstance(color, (list,tuple,np.ndarray)):
-                c = color[i]
-            else:
-                c = color
-            l = ax.plot(np.linspace(segments[i,0,0],segments[i,0,1],2),
-                    np.linspace(segments[i,1,0],segments[i,1,1],2),
-                    np.linspace(segments[i,2,0],segments[i,2,1],2),
-                    color=c,
-                    alpha=cloud_alpha,
-                    lw=lw)[0]
-            lines.append(l)
     return lines
 
 # animate a video of the stick figure.
@@ -322,7 +196,7 @@ def put_lines(ax, segments, color=None, lw=2.5, alpha=None, cloud=False, cloud_a
 # `zcolor` may be an N-length array, where N is the number of vertices in seq, and will
 # be used to color the vertices. Typically this is set to the avg. z-value of each vtx.
 def animate_stick(seq, ghost=None, ghost_shift=0, figsize=None, zcolor=None, pointer=None, ax_lims=(-0.4,0.4), speed=45,
-                  dot_size=20, dot_alpha=0.5, lw=2.5, cmap='cool_r', pointer_color='black', cloud=False, birds_eye=False, cloud_alpha=0.035):
+                  dot_size=20, dot_alpha=0.5, lw=2.5, cmap='inferno', pointer_color='black'):
     if zcolor is None:
         zcolor = np.zeros(seq.shape[1])
     fig = plt.figure(figsize=figsize)
@@ -333,9 +207,6 @@ def animate_stick(seq, ghost=None, ghost_shift=0, figsize=None, zcolor=None, poi
     ax.xaxis.set_visible(False)
     ax.yaxis.set_visible(False)
     ax.set_frame_on(False)
-    
-    # set figure background opacity (alpha) to 0:
-    fig.patch.set_alpha(0.)
     
     if ghost_shift and ghost is not None:
         seq = seq.copy()
@@ -352,20 +223,17 @@ def animate_stick(seq, ghost=None, ghost_shift=0, figsize=None, zcolor=None, poi
     if ghost is not None:
         pts_g = ax.scatter(ghost[0,:,0],ghost[0,:,1],ghost[0,:,2], c=ghost_color, s=dot_size, alpha=dot_alpha)
     
-    if birds_eye == True:
-        ax.view_init(elev=90., azim=-45.)
-    
     if ax_lims:
         ax.set_xlim(*ax_lims)
         ax.set_ylim(*ax_lims)
         ax.set_zlim(0,ax_lims[1]-ax_lims[0])
     plt.close(fig)
     xline, colors = get_line_segments(seq, zcolor, cm)
-    lines = put_lines(ax, xline[0], colors, lw=lw, alpha=0.9, cloud=cloud, cloud_alpha=cloud_alpha)
+    lines = put_lines(ax, xline[0], colors, lw=lw, alpha=0.9)
     
     if ghost is not None:
         xline_g = get_line_segments(ghost)
-        lines_g = put_lines(ax, xline_g[0], ghost_color, lw=lw, alpha=1.0, cloud=cloud, cloud_alpha=cloud_alpha)
+        lines_g = put_lines(ax, xline_g[0], ghost_color, lw=lw, alpha=1.0)
     
     if pointer is not None:
         vR = 0.15
@@ -400,75 +268,6 @@ def animate_stick(seq, ghost=None, ghost_shift=0, figsize=None, zcolor=None, poi
         interval=speed,
         blit=False,
    )
-    
-# draw a "comic strip" style rendering of the given sequence of poses
-def draw_comic(frames, angles=None, figsize=None, window_size=0.45, dot_size=20, lw=2.5, zcolor=None,cmap='cool_r'):
-    fig = plt.figure(figsize=figsize)
-    ax = p3.Axes3D(fig)
-    ax.view_init(30, 0)
-    shift_size=window_size
-    
-    ax.set_xlim(-window_size,window_size)
-    ax.set_ylim(-window_size,len(frames)*window_size)
-    ax.set_zlim(-0.1,0.6)
-    ax.set_xticklabels([])
-    ax.set_yticklabels([])
-    ax.set_zticklabels([])
-    ax.get_xaxis().set_ticks([])
-    ax.get_yaxis().set_ticks([])
-    
-    cm = matplotlib.cm.get_cmap(cmap)
-    
-    if angles is not None:
-        vR = 0.15
-        zidx = point_labels.index("CLAV")
-        X = frames[:,zidx,0]
-        Y = frames[:,zidx,1]
-        dX,dY = vR*np.cos(angles), vR*np.sin(angles)
-        Z = frames[:,zidx,2]
-        #Z = frames[:,2,2]
- 
-    
-    for iframe,frame in enumerate(frames):
-        ax.scatter(frame[:,0],
-                       frame[:,1]+iframe*shift_size,
-                       frame[:,2],
-                       alpha=0.3,
-                       c=zcolor,
-                       cmap=cm,
-                       s=dot_size,
-                       depthshade=True)
-        
-        if angles is not None:
-            ax.quiver(X[iframe],iframe*shift_size+Y[iframe],Z[iframe],dX[iframe],dY[iframe],0, color='black')
-        
-        for i,(g1,g2) in enumerate(skeleton_lines):
-            g1_idx = [point_labels.index(l) for l in g1]
-            g2_idx = [point_labels.index(l) for l in g2]
-
-            if zcolor is not None:
-                color = cm(0.5*(zcolor[g1_idx].mean() + zcolor[g2_idx].mean()))
-            else:
-                color = None
-
-            x1 = np.mean(frame[g1_idx],axis=0)
-            x2 = np.mean(frame[g2_idx],axis=0)
-            
-            ax.plot(np.linspace(x1[0],x2[0],10),
-                    np.linspace(x1[1],x2[1],10)+iframe*shift_size,
-                    np.linspace(x1[2],x2[2],10),
-                    color=color,
-                    lw=lw)
-
-# Rotate a (?,...,?,3) tensor about the z-axis
-def rotate(X, theta):
-    c,s = np.cos(theta), np.sin(theta)
-    R = np.array([
-        [c, -s, 0],
-        [s, c, 0],
-        [0, 0, 1.]
-        ])
-    return np.dot(X, R)
 
 # generator function to sample batches of contiguous sequences from a given dataset
 # This one will safely avoid creating sequences that span the boundary between
@@ -670,7 +469,6 @@ def mk_seq_ae(X, seq_len, latent_dim=32, n_layers=2, n_units=32, use_dense=True,
         decoder.trainable = False
         encoder.trainable = False
         continuizer.compile(optimizer='adam')
-        #continuizer.compile(optimizer='rmsprop')
         decoder.trainable = True
         encoder.trainable = True
         return continuizer

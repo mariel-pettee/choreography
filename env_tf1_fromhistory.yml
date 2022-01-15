@@ -1,9 +1,0 @@
-name: choreo
-channels:
-  - conda-forge
-  - defaults
-dependencies:
-  - tensorflow==1.13.1
-  - keras==2.2.4
-  - python=3
-prefix: /clusterfs/ml4hep/mpettee/miniconda3/envs/choreo
