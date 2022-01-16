@@ -10,17 +10,11 @@ from keras.models import load_model
 import argparse
 
 def setup_gpus():
-    # use tensorflow backend
-    # set random seeds
     # tf.set_random_seed(1)
     # np.random.seed(1)
     # identify available GPU's
-#     gpus = K.tensorflow_backend._get_available_gpus()
-    gpus = tf.config.experimental.list_physical_devices('GPU')
-    # allow dynamic GPU memory allocation
-    config = tf.compat.v1.ConfigProto()
-    config.gpu_options.allow_growth = True
-    session = tf.compat.v1.Session(config=config)
+    gpus = K.tensorflow_backend._get_available_gpus() # works with TF 1
+#     gpus = tf.config.experimental.list_physical_devices('GPU') # works with TF 2
     print("GPUs found: {}".format(len(gpus)))
     return()
     
