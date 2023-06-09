@@ -2,7 +2,8 @@
 'I didn’t want to imitate anybody. Any movement I knew, I didn’t want to use.' – Pina Bausch
 
 Paper: https://arxiv.org/abs/1907.05297
-Mariel Pettee, Chase Shimmin, Douglas Duhaime, and Ilya Vidrin. Beyond Imitation: Generative and Variational Choreography via Machine Learning. Proceedings of the 10th International Conference on Computational Creativity. (2019).
+
+Mariel Pettee, Chase Shimmin, Douglas Duhaime, and Ilya Vidrin. *Beyond Imitation: Generative and Variational Choreography via Machine Learning*. Proceedings of the 10th International Conference on Computational Creativity. (2019).
 
 ### Getting started: 
 I like to work within Conda environments to manage package dependencies. To download Conda (Miniconda is sufficient) for your particular system, and for Python 3, check out: https://docs.conda.io/en/latest/miniconda.html
